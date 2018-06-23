@@ -1,0 +1,128 @@
+﻿@using System.Json;
+@using System.Web;
+@using System.Configuration;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+
+@{
+    ViewBag.Title = "Manager - News";
+}
+
+@{
+    //Read Json
+    string jsonReadUrl = ConfigurationManager.AppSettings["jsonPathOrig"].ToString(); //@"C:\\Users\dingusci\source\repos\Cadan-JsonCMS\CadanJsonCMS\reloaded\js\ajax\data\news\news.json";
+    string streamread = File.ReadAllText(jsonReadUrl);
+    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(streamread);
+    string newsString = Convert.ToString(jsonObj);
+    string newsList = JsonConvert.SerializeObject(jsonObj);
+    string decodedNewsList = HttpUtility.HtmlDecode(newsList);
+    dynamic newsJson = JsonConvert.DeserializeObject(newsList);
+    JArray newsAJson = JArray.Parse(newsList);
+
+    //string editNewsURL = "/Manager/NewsManager/Edit";
+    //string deleteNewsURL = "";
+}
+
+<style>
+    .tabulator-header-filter input { max-width: 100% !important; padding: 0px 2px !important; }
+    .tabulator .tabulator-header .tabulator-col { background: #ffffff; }
+    #edit-delete-overlay { height: 100%; width: 100%; top: 0; left: -100%; z-index: 1; }
+    #edit-delete-overlay .curtain { position: absolute; height: 100%; width: 100%; top: 0; left: 0; background-color: rgba(0, 0, 0, 0.75); }
+    #edit-delete-overlay .curtain .box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; }
+    #edit-delete-overlay .curtain .box h1 { margin-bottom: 0px; }
+    #edit-delete-overlay .curtain .box span { font-size: 80px; }
+    #edit-delete-overlay .curtain .box span i { padding: 0 10px; cursor: pointer; }
+    #edit-delete-overlay .curtain .box span i:hover { color: #9b4dca; }
+    #edit-delete-overlay.opened { left: 0%; }
+    #news-message { position: absolute; left: -100%; top: 95px; z-index: 10; }
+</style>
+
+<legend>@Html.ActionLink("Home", "Index", "HomeManager", new { Area = "Manager" }, new { @title = "Torna alla News" }) - News</legend>
+<div id="manager-news">
+    <span id="news-message" class="@TempData["classe"]" style="@TempData["style"]">@TempData["message"]</span>
+    <div id="add-news-button" class="col-12 text-right mt-3">
+        @Html.ActionLink(" ", "Create", "NewsManager", new { area = "Manager" }, new { @class = "fa fa-plus-circle", @style = "font-size: 40px;", @title = "Add a news" })
+    </div>
+
+    <div id="edit-delete-overlay" class="position-absolute">
+        <div class="curtain">
+            <div class="box p-md-5 text-center">
+                <h1>Chose one</h1>
+                <span>
+                    <i title="Edit" class="fa fa-pencil"></i>
+                    <i title="Delete" class="fa fa-trash"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div id="example-table" class="mt-3"></div>
+</div>
+
+
+<script>
+jQuery(document).ready(function ($) {
+    function classSwitcher(selector, classToSwitch) {
+        if ($(selector).hasClass(classToSwitch)) {
+            $(selector).removeClass(classToSwitch);
+        } else {
+            $(selector).addClass(classToSwitch);
+        }
+    };
+
+    function editNews(selector, partialURL, id) {
+        var path = partialURL + "/" + id;
+        $(selector).off('click').on('click', function () {
+            location.href = path;
+        })
+    }
+
+    $("#edit-delete-overlay .curtain").on('click', function () {
+        classSwitcher('#edit-delete-overlay', "opened");
+    });
+
+    Tabulator.extendExtension("mutator", "mutators", {
+        dateFormat: function (value, data, type, params, component) {
+            var d = new Date(value);
+            var month = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"][d.getMonth()];
+            //var str = d.getDay() + '/' + d.getUTCMonth + '/' + d.getFullYear();
+            var str = d.getDate() + ' ' + month + ' ' + d.getFullYear();
+            //return moment(d).locale("it").format('L');
+            return str;
+        },
+    });
+
+    //create Tabulator on DOM element with id "example-table"
+    $("#example-table").tabulator({
+        //height: 700, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+        layout: "fitColumns", //fit columns to width of table (optional)
+        columns: [ //Define Table Columns
+            { title: "Id", field: "id", align: "center", width: 25 },
+            { title: "Title", field: "title", align: "left", width: 350, headerFilter: "input" },
+            { title: "Date", field: "date", sorter: "date", mutator: "dateFormat", align: "center", headerFilter: "input" },
+            { title: "Author", field: "author", align: "center", headerFilter: "input" },
+            { title: "Macroarea", field: "macroarea", align: "center", headerFilter: "input" },
+            { title: "Category", field: "category", align: "center", headerFilter: "input" }
+        ],
+        rowClick: function (e, row) { //trigger an alert message when the row is clicked
+            //alert("Row " + row.getData().id + " Clicked!!!!");
+            var modal = $("#edit-delete-overlay"),
+                edit = $("#edit-delete-overlay [title='Edit']"),
+                cancel = $("#edit-delete-overlay [title='Delete']");
+
+            if (!modal.hasClass("opened")) {
+                modal.addClass("opened");
+            };
+
+            edit.on("click", function () {
+                window.location = "/Manager/NewsManager/Edit/" + row.getData().id;
+            });
+
+            cancel.on("click", function () {
+                window.location = "/Manager/NewsManager/Delete/" + row.getData().id;
+            });
+        }
+    });
+
+    $("#example-table").tabulator("setData", @Html.Raw(@jsonObj));
+});
+</script>

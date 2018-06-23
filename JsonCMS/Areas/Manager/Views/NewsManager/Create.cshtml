@@ -1,0 +1,117 @@
+﻿@using System.Json;
+@using System.Configuration;
+
+@model JsonCMS.Areas.Manager.Models.News
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@{
+
+    string news = "",
+            press = "",
+            events = "";
+
+    switch (ViewBag.macroarea)
+    {
+        case "news":
+            news = "selected";
+            break;
+        case "press":
+            press = "selected";
+            break;
+        case "events":
+            events = "selected";
+            break;
+        default:
+            news = "selected";
+            break;
+    }
+
+    string blank = "",
+            self = "selected";
+
+    if (ViewBag.target == "blank" || ViewBag.target != "")
+    {
+        blank = "selected";
+    }
+    else
+    {
+        self = "selected";
+    }
+}
+
+<div id="milligram">
+    <form method="post" class="text-center" enctype="multipart/form-data">
+        <fieldset class="text-left d-inline-block border-bottom">
+            <legend class="border-bottom">
+                <span>@Html.ActionLink("Home", "Index", "HomeManager", new { Area = "Manager" }, new { @title = "Torna alla News" }) </span>
+                <span> - </span> 
+                <span>@Html.ActionLink("News", "News", "NewsManager", new { Area = "Manager" }, new { @title = "Torna alla News" }) </span>
+                <span> - Create News</span>
+            </legend>
+            <div class="main-panel d-inline-block align-top">
+                <input type="hidden" name="model.id" value="1" />
+                <div>
+                    <label for="title">Titolo: <span class="text-danger d-inline-block m-0" style="font-size: 15px;">@ViewBag.titleMessage</span></label>
+                    @Html.ValidationMessageFor(model => model.title, "", new { @class = "text-danger" })
+                    <input type="text" name="model.title" value="@ViewBag.ntitle" class="col-12" />
+                </div>
+                <div>
+                    <label for="eyelet">Occhiello:</label>
+                    <input type="text" name="model.eyelet" value="@ViewBag.eyelet" class="col-12" />
+                </div>
+                <div class="body-textarea">
+                    <label>Corpo:</label>
+                    <textarea id="news-body" type="text" name="model.body">@ViewBag.body</textarea>
+                </div>
+            </div>
+            <div class="side-bar d-inline-block align-top border-left">
+                <div class="side-save-btn text-right">
+                    <input type="submit" value="Salva" class="submit col-12" />
+                </div>
+                <div class="side-input">
+                    <div>
+                        <label for="author">Autore:</label>
+                        <input type="text" name="model.author" value="@ViewBag.author" class="col-12" />
+                    </div>
+                    <div>
+                        <label for="date">Data:</label>
+                        <input type="date" name="model.date" value="@ViewBag.date" class="col-12" />
+                    </div>
+                    <div>
+                        <span>@ViewBag.fileStatus</span>
+                        <label for="img">Image: <h5 class="text-danger d-inline-block m-0">@ViewBag.imageMessage</h5></label>
+                        <img src="@ViewBag.img" class="mb-2" style="width:100%;" />
+                        <input name="model.img" type="file" value="@ViewBag.img" class="col-12 p-0" accept="image/x-png,image/gif,image/jpeg" />
+                    </div>
+                    <div>
+                        <label for="link">Link:</label>
+                        <input type="text" name="model.link" value="@ViewBag.link" accept=".jpg, .jpeg, .png" class="col-12" />
+                    </div>
+                    <div>
+                        <label for="macroarea">Macroarea:</label>
+                        <select name="model.macroarea" class="col-12">
+                            <option @news value="news">News</option>
+                            <option @press value="press">Press</option>
+                            <option @events value="events">Events</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="category">Categoria:</label>
+                        <input type="text" name="model.category" value="@ViewBag.category" class="col-12" />
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<script>
+    var newsEditor = CKEDITOR.replace("news-body", {
+        customConfig: '/bower_components/ckeditor/custom/ckeditor_config.js',
+        language: 'it',
+        height: 500
+    });
+</script>

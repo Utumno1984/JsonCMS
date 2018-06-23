@@ -1,0 +1,168 @@
+﻿@keyframes slideOutFromLeft {
+    0% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+.slideOutFromLeft {
+    animation-name: slideOutFromLeft;
+    animation-duration: 0.3s;
+    animation-timing-function: linear;
+    animation-delay: 3s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+/* Reset */
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    padding:0;
+    height: 100%;
+}
+
+body *{
+    box-sizing: border-box !important;
+}
+
+.body-content {
+    height: calc(100% - 45px);
+    padding: 0;
+}
+
+li{
+    list-style-type: none;
+    margin: 0;
+}
+
+nav.navbar {
+    margin: 0;
+}
+
+nav a.navbar-brand{
+    font-size: 18px;
+}
+
+#manager-news {
+    height: calc(100% - 97px);
+    padding: 0 15px;
+}
+
+#example-table {
+    height: calc(100% - 0px);
+}
+
+footer {
+    display: inline-block;
+    border-top: 1px solid #d1d1d1;
+    width: 100%;
+    margin: 0;
+}
+
+footer p {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 0px 15px;
+}
+
+/* CKE Reset*/
+[id*="cke_"] * { 
+    box-sizing: initial !important;
+}
+
+/* News */
+body legend {
+    padding: 5px 15px;
+}
+
+#add-news-button {
+    position: absolute;
+    display: block;
+    width: auto;
+    bottom: 3px;
+    right: 15px;
+}
+
+#add-news-button a{
+    text-decoration: none;
+}
+
+/* edit/create */
+#milligram {
+    width: 100%;
+    height: calc(100% - 51px);
+    overflow: hidden;
+}
+
+#milligram fieldset{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+
+}
+
+#milligram fieldset > *{
+    font-size: 0 !important;
+}
+
+#milligram fieldset > * *{
+    font-size: initial;
+}
+
+#milligram legend {
+    padding: 5px 15px;
+    margin: 0;
+}
+
+#milligram .main-panel {
+    height: calc(100% - 36px);
+    width: calc(100% - 350px);
+    padding: 15px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#milligram .side-bar {
+    height: calc(100% - 36px);
+    width: 345px;
+}
+
+#milligram form {
+    height: 100%;
+    margin: 0;
+}
+
+#milligram .side-bar .side-save-btn {
+    width: 100%;
+    padding: 15px 15px;
+    border-bottom: 1px solid #d1d1d1;
+}
+    
+#milligram .side-bar .side-save-btn input {
+    margin: 0;
+}
+
+#milligram .side-bar .side-input {
+    padding: 15px;
+    height: calc(100% - 69px);
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+@media screen and (max-width: 991px) {
+    .body-content {
+        height: calc(100% - 58px);
+        padding: 0;
+    }
+}
